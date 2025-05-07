@@ -1,12 +1,13 @@
+import { Model } from "react-native-filament";
 import { View, Text, StyleSheet } from "react-native";
-import { Avatar } from "@/components/Avatar";
+import { ThreeDModel } from "@/components/ThreeDModel";
 
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Scan</Text>
-      <Avatar/>
+      <ThreeDModel/>
     </View>
 
   );
@@ -15,4 +16,5 @@ export default function App() {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
   }})

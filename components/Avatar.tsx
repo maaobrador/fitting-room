@@ -1,39 +1,72 @@
-import { Canvas } from "@react-three/fiber/native";
-import { StatusBar } from "expo-status-bar";
-import { Suspense } from "react";
-import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { useGLTF } from "@react-three/drei/native";
-import { Asset } from "expo-asset";
-import { OrbitControls } from "@react-three/drei/native";
+import React from 'react'
+import { Camera, DefaultLight, FilamentScene, FilamentView, Model, useCameraManipulator } from 'react-native-filament'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
+import { Dimensions, StyleSheet, View } from 'react-native'
+import { useSharedValue } from 'react-native-worklets-core'
 
-function GltfModel() {
-  const model = useGLTF(Asset.fromModule(require("@/assets/models/dummyAvatar.glb")).uri);
+const modelPath = 'https://raw.githubusercontent.com/google/filament/main/third_party/models/DamagedHelmet/DamagedHelmet.glb'
+
+function Scene() {
+  const cameraManipulator = useCameraManipulator({
+    orbitHomePosition: [0, 0, 8], // "Camera location"
+    targetPosition: [0, 0, 0], // "Looking at"
+    orbitSpeed: [0.003, 0.003],
+  })
+
+  // Pan gesture
+  const viewHeight = Dimensions.get('window').height
+  const panGesture = Gesture.Pan()
+    .onBegin((event) => {
+      const yCorrected = viewHeight - event.translationY
+      cameraManipulator?.grabBegin(event.translationX, yCorrected, false) // false means rotation instead of translation
+    })
+    .onUpdate((event) => {
+      const yCorrected = viewHeight - event.translationY
+      cameraManipulator?.grabUpdate(event.translationX, yCorrected)
+    })
+    .maxPointers(1)
+    .onEnd(() => {
+      cameraManipulator?.grabEnd()
+    })
+
+  // Scale gesture
+  const previousScale = useSharedValue(1)
+  const scaleMultiplier = 100
+  const pinchGesture = Gesture.Pinch()
+    .onBegin(({ scale }) => {
+      previousScale.value = scale
+    })
+    .onUpdate(({ scale, focalX, focalY }) => {
+      const delta = scale - previousScale.value
+      cameraManipulator?.scroll(focalX, focalY, -delta * scaleMultiplier)
+      previousScale.value = scale
+    })
+  const combinedGesture = Gesture.Race(pinchGesture, panGesture)
+
   return (
-    <group position={[0, -1, 0]}> {/* Adjust Y-axis to center the avatar */}
-      <primitive object={model.scene} />
-    </group>
-  );
+    <GestureDetector gesture={combinedGesture}>
+      <FilamentView style={styles.container}>
+        <Camera cameraManipulator={cameraManipulator} />
+        <DefaultLight />
+
+        <Model source={{ uri: modelPath }} transformToUnitCube />
+      </FilamentView>
+    </GestureDetector>
+  )
 }
 
-export const Avatar = ()=> {
+export const Avatar =() =>{
   return (
     <View style={styles.container}>
-      <Suspense fallback={<ActivityIndicator size="large" color="#fffff" />}>
-        <Canvas camera={{ position: [0, 1.5, 5], fov: 35 }}>
-          <color attach="background" args={["#ffff"]} />
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[5, 10, 5]} intensity={2} />
-          <GltfModel />
-          <OrbitControls />
-        </Canvas>
-      </Suspense>
-      <StatusBar style="auto" />
+      <FilamentScene>
+        <Scene />
+      </FilamentScene>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})
