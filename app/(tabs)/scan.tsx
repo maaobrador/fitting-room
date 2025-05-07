@@ -138,7 +138,7 @@ export default function App() {
     <SafeAreaView style={styles.container}>
 
 
-      <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500', marginTop: 15 }}> Images</Text>
+      <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500', marginTop: 20 }}> Images</Text>
 
       <FlatList data={images}
         renderItem={renderItem} />

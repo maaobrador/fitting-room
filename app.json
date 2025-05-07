@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "virtaul-fitting",
-    "slug": "virtaul-fitting",
+    "name": "Virtual Fitting System",
+    "slug": "Virtual Fitting System",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
