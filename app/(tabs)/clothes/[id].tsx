@@ -4,22 +4,15 @@ import { Card } from "@rneui/base";
 import clothesLists from "@/assets/clothesLists";
 import { defaultErrorImage } from "@/components/ClothesLists";
 import { Button } from "@rneui/base";
+import { useState } from "react";   
+import { ThreeDModel } from "@/components/ThreeDModel"; // Import the 3D model component
+        
 
-
-async function handleAR () {
-//logic for trying on clothes using AR
-      console.log('AR button pressed');
-    }
-
-    async function handleAvatar () {
-//logic for trying on clothes using Avatar
-        console.log('Avatar button pressed');
-      }
 
 
 const ClothesScreen = () => {
     const { id } = useLocalSearchParams();
-
+    const [show3DModel, setShow3DModel] = useState(false);
     const clothes = clothesLists.find((p) => p.id.toString() === id);
     if (!clothes) {
         return (
@@ -29,7 +22,20 @@ const ClothesScreen = () => {
         );
     }
 
-
+    async function handleAR () {
+        //logic for trying on clothes using AR
+              console.log('AR button pressed');
+            }
+        
+            async function handleAvatar () {
+        //logic for trying on clothes using Avatar
+                console.log('Avatar button pressed');
+                setShow3DModel(true); // Show the 3D model
+            };
+          
+            if (show3DModel) {
+              return <ThreeDModel />;
+            }
     return (
         <SafeAreaView style={styles.container}>
             <Card containerStyle={styles.cardContainer}>
