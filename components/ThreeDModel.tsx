@@ -7,7 +7,7 @@ import { Asset } from "expo-asset";
 import { OrbitControls } from "@react-three/drei/native";
 
 function GltfModel() {
-  const model = useGLTF(Asset.fromModule(require("@/assets/models/denimJacket.glb")).uri);
+  const model = useGLTF(Asset.fromModule(require("@/assets/models/flouncingBlouse.glb")).uri);
   return <primitive object={model.scene} />;
 }
 

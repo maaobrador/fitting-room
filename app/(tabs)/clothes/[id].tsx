@@ -4,9 +4,9 @@ import { Card } from "@rneui/base";
 import clothesLists from "@/assets/clothesLists";
 import { defaultErrorImage } from "@/components/ClothesLists";
 import { Button } from "@rneui/base";
-import { useState } from "react";   
+import { useState } from "react";
 import { ThreeDModel } from "@/components/ThreeDModel"; // Import the 3D model component
-        
+
 
 
 
@@ -22,56 +22,56 @@ const ClothesScreen = () => {
         );
     }
 
-    async function handleAR () {
+    async function handleAR() {
         //logic for trying on clothes using AR
-              console.log('AR button pressed');
-            }
-        
-            async function handleAvatar () {
+        console.log('AR button pressed');
+    }
+
+    async function handleAvatar() {
         //logic for trying on clothes using Avatar
-                console.log('Avatar button pressed');
-                setShow3DModel(true); // Show the 3D model
-            };
-          
-            if (show3DModel) {
-              return <ThreeDModel />;
-            }
+        console.log('Avatar button pressed');
+        setShow3DModel(true); // Show the 3D model
+    };
+
+    if (show3DModel) {
+        return <ThreeDModel />;
+    }
     return (
         <SafeAreaView style={styles.container}>
             <Card containerStyle={styles.cardContainer}>
                 <Image source={{ uri: clothes.image || defaultErrorImage }}
                     style={styles.image}
                     resizeMode='contain' />
-                
-                    <Button
-                            title="AR Try On"
-                            buttonStyle={{
-                              backgroundColor: '#10609B',
-                              borderRadius: 10,
-                            }}
-                            titleStyle={{ fontWeight: '500', fontSize: 18 }}
-                            containerStyle={{
-                              height: 50,
-                              width: 250,
-                              alignSelf: 'center',
-                            }}
-                            onPress={() =>{ handleAR ()}}
-                          />
-                    
-                    <Button
-                            title="Avatar Try On"
-                            buttonStyle={{
-                              backgroundColor: '#10609B',
-                              borderRadius: 10,
-                            }}
-                            titleStyle={{ fontWeight: '500', fontSize: 18 }}
-                            containerStyle={{
-                              height: 50,
-                              width: 250,
-                              alignSelf: 'center',
-                            }}
-                            onPress={() =>{ handleAvatar ()}}
-                          />
+
+                <Button
+                    title="AR Try On"
+                    buttonStyle={{
+                        backgroundColor: '#10609B',
+                        borderRadius: 10,
+                    }}
+                    titleStyle={{ fontWeight: '500', fontSize: 18 }}
+                    containerStyle={{
+                        height: 50,
+                        width: 250,
+                        alignSelf: 'center',
+                    }}
+                    onPress={() => { handleAR() }}
+                />
+
+                <Button
+                    title="Avatar Try On"
+                    buttonStyle={{
+                        backgroundColor: '#10609B',
+                        borderRadius: 10,
+                    }}
+                    titleStyle={{ fontWeight: '500', fontSize: 18 }}
+                    containerStyle={{
+                        height: 50,
+                        width: 250,
+                        alignSelf: 'center',
+                    }}
+                    onPress={() => { handleAvatar() }}
+                />
             </Card>
         </SafeAreaView>
     );
