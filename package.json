@@ -1,12 +1,12 @@
 {
-  "name": "virtaul-fitting",
+  "name": "virtual-fitting",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint"
   },
@@ -17,7 +17,9 @@
     "@react-navigation/native": "^7.1.6",
     "@react-three/drei": "^10.0.7",
     "@react-three/fiber": "^9.1.2",
+    "@reactvision/react-viro": "^2.43.0",
     "@rneui/base": "^4.0.0-rc.8",
+    "@viro-community/react-viro": "^2.41.1",
     "axios": "^1.9.0",
     "expo": "~53.0.4",
     "expo-blur": "~14.1.4",

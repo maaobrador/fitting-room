@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import {
   ViroText,
-  ViroARScene,
   ViroTrackingStateConstants,
   ViroARSceneNavigator,
   ViroTrackingReason,
-} from "@reactvision/react-viro";
-
+} from "@viro-community/react-viro";
+import {ViroARScene} from '@reactvision/react-viro'
 
 
 const HelloWorldSceneAR = () => {
