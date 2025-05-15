@@ -7,8 +7,12 @@ import { Asset } from "expo-asset";
 import { OrbitControls } from "@react-three/drei/native";
 
 function GltfModel() {
-  const model = useGLTF(Asset.fromModule(require("@/assets/models/denimJacket.glb")).uri);
-  return <primitive object={model.scene} />;
+  const model = useGLTF(Asset.fromModule(require("@/assets/models/dummyAvatar.glb")).uri);
+
+  return( 
+    <group position={[0, -1, 0]}>
+  <primitive object={model.scene} />;
+  </group>)
 }
 
 export const ThreeDModel = ()=> {
