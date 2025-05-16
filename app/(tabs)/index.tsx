@@ -1,13 +1,13 @@
-import { Model } from "react-native-filament";
+
 import { View, Text, StyleSheet } from "react-native";
-import { ThreeDModel } from "@/components/ThreeDModel";
+import { Avatar } from "@/components/Avatar";
 
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>Scan</Text>
-      <ThreeDModel/>
+      <Avatar/>
     </View>
 
   );

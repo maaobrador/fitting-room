@@ -15,15 +15,25 @@ function GltfModel() {
   </group>)
 }
 
+function GltfModel2() {
+  const model = useGLTF(Asset.fromModule(require("@/assets/models/flouncingBlouse.glb")).uri);
+
+  return( 
+    <group position={[0, 0.18, 0]} scale={[0.43, 0.43, 0.43]}>
+  <primitive object={model.scene} />;
+  </group>)
+}
+
 export const ThreeDModel = ()=> {
   return (
     <View style={styles.container}>
       <Suspense fallback={<ActivityIndicator size="large" color="#fffff" />}>
         <Canvas camera={{ position: [0, 1.5, 5], fov: 35 }}>
           <color attach="background" args={["#ffff"]} />
-          <ambientLight intensity={0.4} />
-          <directionalLight position={[5, 10, 5]} intensity={2} />
+          <ambientLight intensity={1} />
+          <directionalLight position={[5, 0, 10]} intensity={1.5} />
           <GltfModel />
+          <GltfModel2/>
           <OrbitControls />
         </Canvas>
       </Suspense>
