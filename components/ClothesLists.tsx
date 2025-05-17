@@ -14,6 +14,7 @@ const ProductListItem = ({ clothesList }: ProductListItemProps) => {
         <Link href={ `/clothes/${clothesList.id}` } asChild>
          <Pressable style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
+          <Text style={styles.title}>{clothesList.name}</Text>
         <Image source={{uri: clothesList.image || defaultErrorImage }} 
         style={ styles.image}
         resizeMode='contain' />
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     alignContent: 'center', 
     width: '98%',
+    
   },
 
   image:{

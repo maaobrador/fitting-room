@@ -6,7 +6,6 @@ import { Avatar } from "@/components/Avatar";
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Scan</Text>
       <Avatar/>
     </View>
 
