@@ -21,7 +21,7 @@ const ClothesScreen = () => {
 
   async function handleAR() {
     console.log("AR button pressed");
-    const url = "http://192.168.168.207:5173/"; // Replace with your AR page
+    const url = "http://192.168.43.241:5173/"; // Replace with your AR page
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);

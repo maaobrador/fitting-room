@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  View,
-  Text,
-  TextInput,
-  Platform,
-  Alert,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, FlatList, ActivityIndicator, View, Text, Platform, Alert } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
@@ -20,7 +10,7 @@ import ImageNamingModal from '@/components/ImageNamingModal';
 import ActionButtons from '@/components/ActionButtons';
 import { imgDir, ensureDirExists, checkFileSize } from '@/components/fileHelper';
 
-const API_BASE = 'http://192.168.43.241:8000';
+const API_BASE = 'http://192.168.168.207:8000';
 
 export default function App() {
   const [uploading, setUploading] = useState(false);
@@ -28,7 +18,6 @@ export default function App() {
   const [newImageUri, setNewImageUri] = useState<string | null>(null);
   const [isNaming, setIsNaming] = useState(false);
   const [newFileName, setNewFileName] = useState('');
-  const [height, setHeight] = useState(''); // <- New State
 
   useEffect(() => {
     loadImages();
@@ -107,11 +96,6 @@ export default function App() {
   };
 
   const uploadImagesBatch = async () => {
-    if (!height.trim()) {
-      alert('Please enter height before uploading.');
-      return;
-    }
-
     try {
       setUploading(true);
 
@@ -126,17 +110,13 @@ export default function App() {
       }
 
       const zipBase64 = await zip.generateAsync({ type: 'base64' });
+
       const zipPath = FileSystem.cacheDirectory + 'images.zip';
       await FileSystem.writeAsStringAsync(zipPath, zipBase64, {
         encoding: FileSystem.EncodingType.Base64,
       });
 
       const cleanZipUri = Platform.OS === 'android' ? zipPath : zipPath.replace('file://', '');
-      const timestamp = new Date().toISOString();
-
-      console.log('ZIP file generated at:', cleanZipUri);
-      console.log('Height to send:', height);
-      console.log('Timestamp:', timestamp);
 
       const formData = new FormData();
       formData.append('zipfile', {
@@ -144,16 +124,15 @@ export default function App() {
         name: 'images.zip',
         type: 'application/zip',
       } as any);
-      formData.append('timestamp', timestamp);
-      formData.append('height', height); // <-- height included here
+      formData.append('timestamp', new Date().toISOString());
 
-      const { data } = await axios.post(`${API_BASE}/api/upload`, formData, {
+      const { data } = await axios.post(`${API_BASE}/api/upload-zip`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       alert(data.isSuccess ? 'ZIP Upload successful!' : 'ZIP Upload failed');
     } catch (err) {
-      console.error('❌ Error during zip upload:', err);
+      console.error(err);
       alert('Zip upload failed.');
     } finally {
       setUploading(false);
@@ -168,15 +147,6 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Images</Text>
-
-      <Text style={styles.label}>Enter Height (in cm):</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        placeholder="e.g., 170"
-        value={height}
-        onChangeText={setHeight}
-      />
 
       <FlatList
         data={images}
@@ -219,20 +189,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   title: { textAlign: 'center', fontSize: 18, fontWeight: '500', marginTop: 20 },
-  label: {
-    marginHorizontal: 20,
-    fontSize: 16,
-    fontWeight: '500',
-    marginTop: 10,
-  },
-  input: {
-    marginHorizontal: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.4)',

@@ -40,15 +40,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Avatar',
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="body" color={color} />,
+          title: 'Scan',
+          tabBarIcon: ({ color }) => <AntDesign size={28} name="camera" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="scan"
+        name="avatar"
         options={{
-          title: 'Scan',
-          tabBarIcon: ({ color }) => <AntDesign size={28} name="camera" color={color} />,
+          title: 'Avatar',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="body" color={color} />,
         }}
       />
     </Tabs>
