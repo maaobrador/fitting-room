@@ -5,6 +5,7 @@ import clothesLists from "@/assets/clothesLists";
 import { defaultErrorImage } from "@/components/ClothesLists";
 import { useState } from "react";
 import { ThreeDModel } from "@/components/ThreeDModel"; // Import the 3D model component
+import Constants from "expo-constants";
 
 const ClothesScreen = () => {
   const { id } = useLocalSearchParams();
@@ -21,7 +22,8 @@ const ClothesScreen = () => {
 
   async function handleAR() {
     console.log("AR button pressed");
-    const url = "http://192.168.43.241:5173/"; // Replace with your AR page
+    const url = Constants.expoConfig?.extra?.AR_URL ?? '';
+
     const supported = await Linking.canOpenURL(url);
     if (supported) {
       await Linking.openURL(url);
@@ -32,7 +34,6 @@ const ClothesScreen = () => {
 
   function handleAvatar() {
     console.log("Avatar button pressed");
-    console.log('Model file:', clothes.model);
     setShow3DModel(true); // Show the 3D model
   }
 

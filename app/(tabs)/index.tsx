@@ -1,17 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  FlatList,
-  ActivityIndicator,
-  View,
-  Text,
-  TextInput,
-  Platform,
-  Alert,
-} from 'react-native';
+import { SafeAreaView, StyleSheet, FlatList, ActivityIndicator, View, Text, TextInput, Platform, Alert,} from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import axios from 'axios';
 import JSZip from 'jszip';
 
@@ -19,8 +10,10 @@ import ImageCard from '@/components/ImageCard';
 import ImageNamingModal from '@/components/ImageNamingModal';
 import ActionButtons from '@/components/ActionButtons';
 import { imgDir, ensureDirExists, checkFileSize } from '@/components/fileHelper';
+import Constants from 'expo-constants';
 
-const API_BASE = 'http://192.168.43.241:8000';
+
+const API_BASE = Constants.expoConfig?.extra?.API_BASE;
 
 export default function App() {
   const [uploading, setUploading] = useState(false);
@@ -28,7 +21,7 @@ export default function App() {
   const [newImageUri, setNewImageUri] = useState<string | null>(null);
   const [isNaming, setIsNaming] = useState(false);
   const [newFileName, setNewFileName] = useState('');
-  const [height, setHeight] = useState(''); // <- New State
+  const [height, setHeight] = useState('');
 
   useEffect(() => {
     loadImages();
@@ -52,7 +45,13 @@ export default function App() {
       : await ImagePicker.launchCameraAsync(options);
 
     if (!result.canceled) {
-      setNewImageUri(result.assets[0].uri);
+      const manipulated = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [],
+        { format: ImageManipulator.SaveFormat.PNG }
+      );
+
+      setNewImageUri(manipulated.uri);
       setIsNaming(true);
     }
   };
@@ -60,7 +59,7 @@ export default function App() {
   const handleSaveWithName = async () => {
     if (!newImageUri || !newFileName.trim()) return;
 
-    const ext = newImageUri.split('.').pop() || 'jpg';
+    const ext = 'png';
     const filename = newFileName.trim().endsWith(`.${ext}`)
       ? newFileName.trim()
       : `${newFileName.trim()}.${ext}`;
@@ -78,33 +77,6 @@ export default function App() {
     }
   };
 
-  const uploadImage = async (uri: string) => {
-    const canUpload = await checkFileSize(uri);
-    if (!canUpload) return alert('File too large');
-
-    const cleanUri = Platform.OS === 'android' ? uri : uri.replace('file://', '');
-    const filename = uri.split('/').pop()!;
-    const ext = filename.split('.').pop();
-    const type = `image/${ext}`;
-
-    const formData = new FormData();
-    formData.append('image', { uri: cleanUri, name: filename, type } as any);
-    formData.append('timestamp', new Date().toISOString());
-
-    try {
-      setUploading(true);
-      const { data } = await axios.post(`${API_BASE}/api/upload`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      if (!data.isSuccess) return alert('Upload failed');
-      alert('Image Uploaded');
-    } catch {
-      alert('Something went wrong');
-    } finally {
-      setUploading(false);
-    }
-  };
 
   const uploadImagesBatch = async () => {
     if (!height.trim()) {
@@ -134,10 +106,6 @@ export default function App() {
       const cleanZipUri = Platform.OS === 'android' ? zipPath : zipPath.replace('file://', '');
       const timestamp = new Date().toISOString();
 
-      console.log('ZIP file generated at:', cleanZipUri);
-      console.log('Height to send:', height);
-      console.log('Timestamp:', timestamp);
-
       const formData = new FormData();
       formData.append('zipfile', {
         uri: cleanZipUri,
@@ -145,7 +113,7 @@ export default function App() {
         type: 'application/zip',
       } as any);
       formData.append('timestamp', timestamp);
-      formData.append('height', height); // <-- height included here
+      formData.append('height', height);
 
       const { data } = await axios.post(`${API_BASE}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -184,7 +152,6 @@ export default function App() {
         renderItem={({ item }) => (
           <ImageCard
             uri={item}
-            onUpload={() => uploadImage(item)}
             onDelete={() => deleteImage(item)}
             uploading={uploading}
           />
@@ -218,7 +185,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  title: { textAlign: 'center', fontSize: 18, fontWeight: '500', marginTop: 20 },
+  title: { textAlign: 'center', fontSize: 18, fontWeight: '500', marginTop: 20, padding: 10 },
   label: {
     marginHorizontal: 20,
     fontSize: 16,

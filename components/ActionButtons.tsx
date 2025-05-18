@@ -18,23 +18,25 @@ const ActionButtons = ({
   hasImages,
 }: Props) => (
   <>
-    <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
+
+    <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 5 }}>
+
       <Button
         title="Photo Library"
         buttonStyle={{ backgroundColor: '#10609B' }}
         titleStyle={{ fontWeight: '500', fontSize: 15 }}
-        containerStyle={{ height: 50, width: '45%', marginVertical: 5 }}
+        containerStyle={{ height: 50, width: '45%', }}
         onPress={onPickFromLibrary}
       />
       <Button
         title="Camera"
         buttonStyle={{ backgroundColor: '#10609B' }}
         titleStyle={{ fontWeight: '500', fontSize: 15 }}
-        containerStyle={{ height: 50, width: '45%', marginVertical: 5 }}
+        containerStyle={{ height: 50, width: '45%', }}
         onPress={onTakePhoto}
       />
-    </View>
 
+    </View>
     <Button
       title="Upload All Images"
       buttonStyle={{ backgroundColor: '#28A745' }}

@@ -5,12 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 type Props = {
   uri: string;
-  onUpload: () => void;
   onDelete: () => void;
   uploading: boolean;
 };
 
-const ImageCard = ({ uri, onUpload, onDelete }: Props) => {
+const ImageCard = ({ uri, onDelete }: Props) => {
   const filename = uri.split('/').pop();
 
   return (
