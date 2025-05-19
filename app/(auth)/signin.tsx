@@ -1,37 +1,39 @@
 import { Button } from '@rneui/base';
-import { Stack, useNavigation } from 'expo-router';
-import * as SecureStore from 'expo-secure-store';
+import { Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, SafeAreaView, StyleSheet, Text, TextInput } from 'react-native';
+import { SafeAreaView, StyleSheet, Text } from 'react-native';
 import FormTextField from '@/components/FormTextField';
 import { View } from 'react-native';
 import { Platform } from 'react-native';
-import axios from 'axios';
+import { login, loadUser } from '@/services/AuthService';
+
 
 const SignInScreen = ({ }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] =useState([]);
 
-  
-  async function handleLogin () {
-    try{
-    await axios.post("http://192.168.168.207:8000/api/login",
-       {
-        email,
-        password,
-        device_name: `${Platform.OS} ${Platform.Version}`
-      },
-       {
-        headers:{
-          Accept: 'application/json'
-        }
-      })
-    } catch (e){
-      console.log(e, email, password);
+
+  async function handleLogin() {
+
+    console.log('Login', email, password);
+
+    try {
+      await login(
+        {
+          email,
+          password,
+          device_name: `${Platform.OS} ${Platform.Version}`
+        });
+
+      const user = await loadUser()
+
+    } catch (e) {
+      if (e.response.status === 401) {
+      }
+      console.log('Login failed', e.response.data);
     }
   }
-    
+
 
   return (
 
@@ -45,20 +47,20 @@ const SignInScreen = ({ }) => {
       <Text style={styles.caption}> Fit smarter. Style better. Go virtual. </Text>
       {/* <Text>{user}</Text> */}
       {/* <Text style={{color:'red'}}>{error?.email ? error.email[0]}</Text> */}
-      
-      <View style={{rowGap:16}}>
-      <FormTextField 
-        label='Email Address:'
-        value={email}
-        onChangeText={setEmail}
-        keyboardType='email-address'
-      />
-      <FormTextField 
-        label='Password:' 
-        secureTextEntry={true}
-        value={password}
-        onChangeText={setPassword}
-      />
+
+      <View style={{ rowGap: 16 }}>
+        <FormTextField
+          label='Email Address:'
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+          keyboardType='email-address'
+        />
+        <FormTextField
+          label='Password:'
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
       </View>
 
       <Button
@@ -74,7 +76,7 @@ const SignInScreen = ({ }) => {
           alignSelf: 'center',
           margin: 20
         }}
-        onPress={() =>{ handleLogin ()}}
+        onPress={() => { handleLogin() }}
       />
     </SafeAreaView>
   );

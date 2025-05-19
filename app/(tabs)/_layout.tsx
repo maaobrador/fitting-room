@@ -41,6 +41,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Scan',
+          headerTitle: 'Images',
+          headerTitleAlign:'center',
+          headerShown: true,
           tabBarIcon: ({ color }) => <AntDesign size={28} name="camera" color={color} />,
         }}
       />

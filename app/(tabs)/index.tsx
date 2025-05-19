@@ -1,21 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, FlatList, ActivityIndicator, View, Text, TextInput, Platform, Alert,} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  View,
+  Text,
+  TextInput,
+  Platform,
+  Alert,
+} from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import axios from 'axios';
-import JSZip from 'jszip';
-
 import ImageCard from '@/components/ImageCard';
 import ImageNamingModal from '@/components/ImageNamingModal';
 import ActionButtons from '@/components/ActionButtons';
-import { imgDir, ensureDirExists, checkFileSize } from '@/components/fileHelper';
+import { imgDir, ensureDirExists } from '@/components/fileHelper';
 import Constants from 'expo-constants';
-
+import { Stack } from 'expo-router';
 
 const API_BASE = Constants.expoConfig?.extra?.API_BASE;
 
 export default function App() {
+  <Stack.Screen
+    options={{
+      title: "Images"
+    }}
+  />
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState<string[]>([]);
   const [newImageUri, setNewImageUri] = useState<string | null>(null);
@@ -34,6 +47,11 @@ export default function App() {
   };
 
   const selectImage = async (useLibrary: boolean) => {
+    if (images.length >= 2) {
+      alert('You can only add up to 2 images.');
+      return;
+    }
+
     const options: ImagePicker.ImagePickerOptions = {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -77,8 +95,12 @@ export default function App() {
     }
   };
 
-
   const uploadImagesBatch = async () => {
+    if (images.length !== 2) {
+      alert('You must upload exactly 2 images.');
+      return;
+    }
+
     if (!height.trim()) {
       alert('Please enter height before uploading.');
       return;
@@ -87,42 +109,27 @@ export default function App() {
     try {
       setUploading(true);
 
-      const zip = new JSZip();
-
-      for (let uri of images) {
-        const filename = uri.split('/').pop()!;
-        const base64 = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        zip.file(filename, base64, { base64: true });
-      }
-
-      const zipBase64 = await zip.generateAsync({ type: 'base64' });
-      const zipPath = FileSystem.cacheDirectory + 'images.zip';
-      await FileSystem.writeAsStringAsync(zipPath, zipBase64, {
-        encoding: FileSystem.EncodingType.Base64,
+      const formData = new FormData();
+      images.forEach((uri, index) => {
+        const cleanUri = Platform.OS === 'android' ? uri : uri.replace('file://', '');
+        formData.append(`image${index + 1}`, {
+          uri: cleanUri,
+          name: `image${index + 1}.png`,
+          type: 'image/png',
+        } as any);
       });
 
-      const cleanZipUri = Platform.OS === 'android' ? zipPath : zipPath.replace('file://', '');
-      const timestamp = new Date().toISOString();
-
-      const formData = new FormData();
-      formData.append('zipfile', {
-        uri: cleanZipUri,
-        name: 'images.zip',
-        type: 'application/zip',
-      } as any);
-      formData.append('timestamp', timestamp);
       formData.append('height', height);
+      formData.append('timestamp', new Date().toISOString());
 
       const { data } = await axios.post(`${API_BASE}/api/upload`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      alert(data.isSuccess ? 'ZIP Upload successful!' : 'ZIP Upload failed');
+      alert(data.isSuccess ? 'Upload successful!' : 'Upload failed');
     } catch (err) {
-      console.error('❌ Error during zip upload:', err);
-      alert('Zip upload failed.');
+      console.error('❌ Upload error:', err);
+      alert('Upload failed.');
     } finally {
       setUploading(false);
     }
@@ -135,7 +142,6 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Images</Text>
 
       <Text style={styles.label}>Enter Height (in cm):</Text>
       <TextInput
@@ -145,7 +151,7 @@ export default function App() {
         value={height}
         onChangeText={setHeight}
       />
-
+      
       <FlatList
         data={images}
         keyExtractor={(item) => item}
@@ -169,7 +175,7 @@ export default function App() {
         onTakePhoto={() => selectImage(false)}
         onUploadAll={uploadImagesBatch}
         uploading={uploading}
-        hasImages={images.length > 0}
+        hasImages={images.length === 2}
       />
 
       <ImageNamingModal
@@ -185,7 +191,13 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  title: { textAlign: 'center', fontSize: 18, fontWeight: '500', marginTop: 20, padding: 10 },
+  title: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '500',
+    marginTop: 20,
+    padding: 10,
+  },
   label: {
     marginHorizontal: 20,
     fontSize: 16,
