@@ -46,43 +46,45 @@ const ClothesScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Card containerStyle={styles.cardContainer}>
-        <Button
-          title="AR Try On"
-          buttonStyle={{
-            backgroundColor: '#10609B',
-            borderRadius: 10,
-          }}
-          titleStyle={{ fontWeight: '500', fontSize: 18 }}
-          containerStyle={{
-            height: 50,
-            width: 250,
-            alignSelf: 'center',
-            marginBottom: 10,
-          }}
-          onPress={handleAR}
-        />
-
-        <Button
-          title="Avatar Try On"
-          buttonStyle={{
-            backgroundColor: '#10609B',
-            borderRadius: 10,
-          }}
-          titleStyle={{ fontWeight: '500', fontSize: 18 }}
-          containerStyle={{
-            height: 50,
-            width: 250,
-            alignSelf: 'center',
-          }}
-          onPress={handleAvatar}
-        />
-
         <Image
           source={{ uri: clothes.image || defaultErrorImage }}
           style={styles.image}
           resizeMode="contain"
         />
       </Card>
+
+        <View style={styles.buttoncontainer}>
+        <Button
+          title="AR Try On"
+          buttonStyle={{
+            backgroundColor: '#10609B',
+            borderRadius: 10,
+          }}
+          titleStyle={{ fontWeight: '500', fontSize: 15 }}
+          containerStyle={{
+            height: 40,
+            width: 150,
+            alignSelf: 'center',
+          }}
+          onPress={handleAR}
+        />
+                <Button
+          title="Avatar Try On"
+          buttonStyle={{
+            backgroundColor: '#10609B',
+            borderRadius: 10,
+          }}
+          titleStyle={{ fontWeight: '500', fontSize: 15 }}
+          containerStyle={{
+            height: 40,
+            width: 150,
+            alignSelf: 'center',
+          }}
+          onPress={handleAvatar}
+        />
+        </View>
+
+
     </SafeAreaView>
   );
 };
@@ -94,16 +96,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  buttoncontainer:{
+    flexDirection: 'row',
+    justifyContent: 'space-around', 
+    marginVertical: 10
+  },
   cardContainer: {
     borderRadius: 10,
     alignContent: 'center',
-    height: '95%',
     padding: 10,
   },
   image: {
     aspectRatio: 2 / 3,
-    width: '85%',
+    width: '80%',
     alignSelf: 'center',
-    marginBottom: 10,
   },
 });
