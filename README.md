@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+# Virtual Fitting System
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -10,15 +10,9 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-      ```bash
-   npm install expo-image-picker
+2. Change the IP address in app.config.js
 
-   npm install @rneui/base
-
-   npm install axios
-   ```
-
-1. Start the app
+3. Start the app
 
    ```bash
    npx expo start
