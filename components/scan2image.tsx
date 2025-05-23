@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, FlatList, ActivityIndicator, View, Text, TextInput, Platform, Alert,} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+  View,
+  Text,
+  TextInput,
+  Platform,
+  Alert,
+} from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -67,23 +77,10 @@ export default function App() {
   const handleSaveWithName = async () => {
     if (!newImageUri || !newFileName.trim()) return;
   
-    // Check file size
-    const fileInfo = await FileSystem.getInfoAsync(newImageUri);
-    const MAX_SIZE_MB = 2;
-    const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
-  
-    if (fileInfo.size && fileInfo.size > MAX_SIZE_BYTES) {
-      Alert.alert(
-        'Image too large',
-        `Each image must be under ${MAX_SIZE_MB} MB. Current size: ${(fileInfo.size / (1024 * 1024)).toFixed(2)} MB`
-      );
-      return;
-    }
-  
     // Ensure the user names the image 'front.png' or 'side.png'
     const ext = 'png';
     let filename = newFileName.trim();
-  
+    
     if (!filename.endsWith(`.${ext}`)) {
       filename = `${filename.trim()}.${ext}`;
     }
@@ -109,7 +106,6 @@ export default function App() {
       Alert.alert('Error', 'Failed to save image.');
     }
   };
-  
 
   const uploadImagesBatch = async () => {
     // Ensure exactly 2 images are uploaded, and they should be named "front" and "side"
@@ -152,15 +148,6 @@ export default function App() {
       // Add height and timestamp
       formData.append('height', height);
       formData.append('timestamp', new Date().toISOString());
-
-      console.log('📤 Uploading the following FormData:');
-      console.log({
-        front: frontImage,
-        side: sideImage,
-        height: Number(height),
-        timestamp: new Date().toISOString(),
-      });
-
   
       const { data } = await axios.post(`${API_BASE}/api/upload`, formData, {
         headers: {
