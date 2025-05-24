@@ -20,3 +20,15 @@ export async function loadUser() {
 
   return user;
 }
+
+export async function logout() {
+  try {
+    // Notify the backend if required (you might need to adapt this endpoint)
+    await axios.post('/logout');
+  } catch (error) {
+    console.warn('Failed to notify server during logout:', error.message);
+  } finally {
+    // Clear the token locally
+    await setToken(null);
+  }
+}

@@ -1,90 +1,138 @@
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native';
 import React, { useState } from 'react';
-import { Button } from '@rneui/base';
-import { Link, Stack } from 'expo-router';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import axios from 'axios';
 
-const SignUpScreen = () => {
-    const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+export default function RegisterScreen() {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
+    });
 
-  async function signUpWithEmail() {
-    // setLoading(true);
-    // const { error } = await supabase.auth.signUp({ email, password });
+    const [errors, setErrors] = useState({});
 
-    // if (error) Alert.alert(error.message);
-    // setLoading(false);
-  }
+    const handleInputChange = (name, value) => {
+        setFormData({ ...formData, [name]: value });
+    };
 
-  return (
-    <View style={styles.container}>
-             <Stack.Screen
-                options={{
-                  headerShown: false       //remove the header for sign in
-                }} />
-      <Stack.Screen options={{ title: 'Sign up' }} />
+    const handleSubmit = async () => {
+        setErrors({});
 
-      <Text style={styles.label}>Name</Text>
-      <TextInput
-        value={name}
-        onChangeText={setName}
-        placeholder="Name"
-        style={styles.input}
-      />
+        try {
+            const response = await axios.post('https://your-api-url.com/api/auth/register', formData);
+            Alert.alert('Success', 'Registration successful!');
+            setFormData({
+                name: '',
+                email: '',
+                password: '',
+                password_confirmation: '',
+            });
+        } catch (error) {
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+            } else {
+                Alert.alert('Error', 'An error occurred. Please try again later.');
+            }
+        }
+    };
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email"
-        style={styles.input}
-      />
+    return (
+        <View style={styles.container}>
+            <Text style={styles.title}>Register</Text>
 
-      <Text style={styles.label}>Password</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Password"
-        style={styles.input}
-        secureTextEntry
-      />
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Name</Text>
+                <TextInput
+                    style={[styles.input, errors.name ? styles.inputError : null]}
+                    value={formData.name}
+                    onChangeText={(value) => handleInputChange('name', value)}
+                />
+                {errors.name && <Text style={styles.errorText}>{errors.name[0]}</Text>}
+            </View>
 
-      <Button
-        onPress={signUpWithEmail}
-        disabled={loading}
-        title={"Register"}
-      />
-      <Link href="/signin" style={styles.textButton}>
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Email</Text>
+                <TextInput
+                    style={[styles.input, errors.email ? styles.inputError : null]}
+                    value={formData.email}
+                    onChangeText={(value) => handleInputChange('email', value)}
+                />
+                {errors.email && <Text style={styles.errorText}>{errors.email[0]}</Text>}
+            </View>
 
-      </Link>
-    </View>
-  );
-};
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Password</Text>
+                <TextInput
+                    style={[styles.input, errors.password ? styles.inputError : null]}
+                    secureTextEntry
+                    value={formData.password}
+                    onChangeText={(value) => handleInputChange('password', value)}
+                />
+                {errors.password && <Text style={styles.errorText}>{errors.password[0]}</Text>}
+            </View>
+
+            <View style={styles.inputGroup}>
+                <Text style={styles.label}>Confirm Password</Text>
+                <TextInput
+                    style={styles.input}
+                    secureTextEntry
+                    value={formData.password_confirmation}
+                    onChangeText={(value) => handleInputChange('password_confirmation', value)}
+                />
+            </View>
+
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Register</Text>
+            </TouchableOpacity>
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    justifyContent: 'center',
-    flex: 1,
-  },
-  label: {
-    color: 'gray',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    padding: 10,
-    marginTop: 5,
-    marginBottom: 20,
-    backgroundColor: 'white',
-    borderRadius: 5,
-  },
-  textButton: {
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+        backgroundColor: '#f4f4f4',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    inputGroup: {
+        marginBottom: 15,
+    },
+    label: {
+        fontSize: 14,
+        marginBottom: 5,
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        backgroundColor: '#fff',
+    },
+    inputError: {
+        borderColor: '#ff6b6b',
+    },
+    errorText: {
+        color: '#ff6b6b',
+        fontSize: 12,
+        marginTop: 5,
+    },
+    button: {
+        backgroundColor: '#3498db',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
-
-export default SignUpScreen;
