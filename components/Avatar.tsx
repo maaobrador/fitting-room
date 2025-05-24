@@ -1,39 +1,66 @@
-import { Canvas } from "@react-three/fiber/native";
-import { StatusBar } from "expo-status-bar";
-import { Suspense } from "react";
-import { StyleSheet, View, ActivityIndicator } from "react-native";
-import { useGLTF } from "@react-three/drei/native";
-import { Asset } from "expo-asset";
-import { OrbitControls } from "@react-three/drei/native";
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, StyleSheet, ActivityIndicator, View, Text, Alert } from 'react-native';
+import { Canvas } from '@react-three/fiber';
+import { useGLTF } from '@react-three/drei';
+import axios from 'axios';
+import Constants from 'expo-constants';
 
-function GltfModel() {
-  const model = useGLTF("http://192.168.43.241:8000/storage/model/dummyAvatar.glb");
+const API_BASE = Constants.expoConfig?.extra?.API_BASE;
 
-  return( 
-    <group position={[0, -1, 0]}>
-  <primitive object={model.scene} />;
-  </group>)
-}
+const GltfModel = ({ modelUrl }) => {
+  const { scene } = useGLTF(modelUrl);
+  return <primitive object={scene} position={[0, -1, 0]} />;
+};
 
-export const Avatar = ()=> {
+export default function ModelViewer({ route }) {
+  const { timestamp } = route.params; // Get the timestamp from route params
+  const [modelUrl, setModelUrl] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const pollForModel = async () => {
+      try {
+        const url = `${API_BASE}/storage/outputs/${timestamp}/${timestamp}_model.glb`;
+        const { status } = await axios.head(url); // Check if the file exists
+
+        if (status === 200) {
+          setModelUrl(url);
+          setLoading(false);
+        } else {
+          throw new Error('Model not available yet.');
+        }
+      } catch {
+        setTimeout(pollForModel, 5000); // Retry every 5 seconds
+      }
+    };
+
+    pollForModel();
+  }, [timestamp]);
+
   return (
-    <View style={styles.container}>
-      <Suspense fallback={<ActivityIndicator size="large" color="#fffff" />}>
-        <Canvas camera={{ position: [0, 1.5, 5], fov: 35 }}>
-          <color attach="background" args={["#ffff"]} />
-          <ambientLight intensity={1} />
-          <directionalLight position={[5, 0, 10]} intensity={1.5} />
-          <GltfModel />
-          <OrbitControls />
+    <SafeAreaView style={styles.container}>
+      {loading ? (
+        <View style={styles.overlay}>
+          <ActivityIndicator color="#000" size="large" />
+          <Text>Loading your model. Please wait...</Text>
+        </View>
+      ) : (
+        <Canvas style={{ flex: 1 }}>
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[10, 10, 5]} />
+          <GltfModel modelUrl={modelUrl} />
         </Canvas>
-      </Suspense>
-      <StatusBar style="auto" />
-    </View>
+      )}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  container: { flex: 1, backgroundColor: '#fff' },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.8)',
   },
 });

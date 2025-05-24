@@ -42,15 +42,15 @@ export default function TabLayout() {
         options={{
           title: 'Scan',
           headerTitle: 'Images',
-          headerTitleAlign:'center',
+          headerTitleAlign: 'center',
           headerShown: true,
           tabBarIcon: ({ color }) => <AntDesign size={28} name="camera" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="avatar"
+        name="modelviewer"
         options={{
-          title: 'Avatar',
+          title: 'Model',
           tabBarIcon: ({ color }) => <Ionicons size={28} name="body" color={color} />,
         }}
       />
