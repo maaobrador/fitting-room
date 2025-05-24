@@ -1,42 +1,19 @@
-import { View, Text, ActivityIndicator, FlatList } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Button } from '@rneui/base';
-import { Link, Redirect } from 'expo-router';
-import { loadUser } from '@/services/AuthService';
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { Link } from 'expo-router';
 
-import { NavigationContainer } from '@react-navigation/native';
-import SignInScreen from './(auth)/signin';
-
-const index = () => {
-
+const Index = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
-
-    <Link href={'/signin'} asChild>
-        <Button title="Sign in" />
-    </Link>
-    <Link href={'/signup'} asChild>
-        <Button title="Register" />
-    </Link>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Welcome to Fitting Room</Text>
+      <Link href="/signin" asChild>
+        <Button title="Sign In" />
+      </Link>
+      <Link href="/signup" asChild>
+        <Button title="Sign Up" />
+      </Link>
     </View>
-
-
-  //   <AuthProvider.Provider value={ {user, setUser}}>
-  //   <NavigationContainer>
-  //     <Stack.Navigator>
-  //       {user ? (
-  //         <>
-  //         <Stack.Screen name="Home" component={HomeStack} />
-  //         </>
-  //       ): (
-  //         <>
-  //         <Stack.Screen name="Login" component={SignInScreen} />
-  //         </>
-  //         )}
-  //     </Stack.Navigator>
-  //   </NavigationContainer>
-  // </AuthProvider.Provider>
   );
 };
 
-export default index;
+export default Index;

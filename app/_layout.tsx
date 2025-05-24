@@ -1,10 +1,12 @@
+import AuthContext, { AuthProvider } from '@/components/AuthContext';
+import { useColorScheme } from '@/hooks/useColorScheme';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import React, { useContext } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,16 +20,36 @@ export default function RootLayout() {
   }
 
   return (
+    <AuthProvider>
+      <AppContent colorScheme={colorScheme} />
+    </AuthProvider>
+  );
+};
+
+const AppContent = ({ colorScheme }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-
-
-
-        <Stack.Screen name="+not-found" />
+        {user ? (
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        ) : (
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        )}
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
   );
-}
+};
+
+const LoadingScreen = () => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <ActivityIndicator size="large" color="#10609B" />
+  </View>
+);
+

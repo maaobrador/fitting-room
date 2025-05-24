@@ -29,15 +29,6 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-        name="clothes"
-        options={{
-          title: 'Clothes',
-          headerTitleAlign: 'center',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <Ionicons size={28} name="shirt-outline" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="index"
         options={{
           title: 'Scan',
@@ -52,6 +43,14 @@ export default function TabLayout() {
         options={{
           title: 'Model',
           tabBarIcon: ({ color }) => <Ionicons size={28} name="body" color={color} />,
+        }}
+      />
+
+<Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="person" color={color} />,
         }}
       />
     </Tabs>

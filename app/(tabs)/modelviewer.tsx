@@ -88,10 +88,10 @@ export default function ModelViewer() {
             <Text>Loading model...</Text>
           </View>
         }>
-          <Canvas style={{ flex: 1 }} camera={{ position: [0, 1.5, 5], fov: 35 }}>
+          <Canvas style={{ flex: 1 }} camera={{ position: [0, 1.5, 5], fov: 45 }}>
             <color attach="background" args={['#fff']} />
             <ambientLight intensity={1} />
-            <directionalLight position={[5, 0, 10]} intensity={1.5} />
+            <directionalLight position={[0, 0, 10]} intensity={1.5} />
             <GltfModel modelUrl={modelUrl} />
             <OrbitControls />
           </Canvas>
