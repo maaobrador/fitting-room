@@ -8,25 +8,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import SignInScreen from './(auth)/signin';
 
 const index = () => {
-  // const [user, setUser] = useState();
-
-  // useEffect(() => {
-  //   async function runEffect() {
-  //     try {
-  //       const user = await loadUser();
-  //       setUser(user);
-  //     } catch (e) {
-  //       console.log('Failed to load user', e);
-  //     }
-  //   }
-  //   runEffect();
-  // }, []);
-
-  // if (user) {
-  //   return <Redirect href={'/(seller)/'} />;
-  // } else {
-  //   return <Redirect href={'/(auth)/login'} />;
-  // };
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>

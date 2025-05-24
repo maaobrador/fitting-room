@@ -10,11 +10,8 @@ import ActionButtons from '@/components/ActionButtons';
 import { imgDir, ensureDirExists } from '@/components/fileHelper';
 import Constants from 'expo-constants';
 import { Stack } from 'expo-router';
-import { useRouter } from 'expo-router';
-
 
 const API_BASE = Constants.expoConfig?.extra?.API_BASE;
-
 
 export default function App() {
   <Stack.Screen
@@ -115,58 +112,63 @@ export default function App() {
   
 
   const uploadImagesBatch = async () => {
-    const router = useRouter();
-
+    // Ensure exactly 2 images are uploaded, and they should be named "front" and "side"
     if (images.length !== 2) {
       alert('You must upload exactly 2 images.');
       return;
     }
-
+  
     const frontImage = images.find((image) => image.toLowerCase().includes('front'));
     const sideImage = images.find((image) => image.toLowerCase().includes('side'));
-
+  
     if (!frontImage || !sideImage) {
       alert('Please ensure you have both "front" and "side" images.');
       return;
     }
-
+  
     if (!height.trim()) {
       alert('Please enter height before uploading.');
       return;
     }
-
+  
     try {
       setUploading(true);
-
+  
       const formData = new FormData();
+      
+      // Add front and side images with proper field names
       formData.append('front', {
         uri: Platform.OS === 'android' ? frontImage : frontImage.replace('file://', ''),
         name: 'front.png',
         type: 'image/png',
       });
-
+  
       formData.append('side', {
         uri: Platform.OS === 'android' ? sideImage : sideImage.replace('file://', ''),
         name: 'side.png',
         type: 'image/png',
       });
-
-      const timestamp = new Date().toISOString();
+  
+      // Add height and timestamp
       formData.append('height', height);
-      formData.append('timestamp', timestamp);
+      formData.append('timestamp', new Date().toISOString());
 
+      console.log('📤 Uploading the following FormData:');
+      console.log({
+        front: frontImage,
+        side: sideImage,
+        height: Number(height),
+        timestamp: new Date().toISOString(),
+      });
+
+  
       const { data } = await axios.post(`${API_BASE}/api/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (data.is_saved) {
-        alert('Upload successful!');
-        router.push(`/modelviewer?timestamp=${timestamp}`); // Navigate to ModelViewer
-      } else {
-        alert('Upload failed.');
-      }
+  
+      alert(data.isSuccess ? 'Upload successful!' : 'Upload failed');
     } catch (err) {
       console.error('❌ Upload error:', err);
       alert('Upload failed.');

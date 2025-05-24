@@ -1,12 +1,10 @@
 
 import { View, Text, StyleSheet } from "react-native";
-import { Avatar } from "@/components/Avatar";
 import { LogBox } from "react-native";
-
+import Avatar from "@/components/Avatar";
 
 
 export default function App() {
-  LogBox.ignoreAllLogs();
   return (
     <View style={styles.container}>
       <Avatar/>
