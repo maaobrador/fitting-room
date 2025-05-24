@@ -7,7 +7,7 @@ import { Asset } from "expo-asset";
 import { OrbitControls } from "@react-three/drei/native";
 
 function GltfModel() {
-  const model = useGLTF(Asset.fromModule(require("@/assets/models/dummyAvatar.glb")).uri);
+  const model = useGLTF("http://192.168.43.241:8000/storage/model/dummyAvatar.glb");
 
   return( 
     <group position={[0, -1, 0]}>

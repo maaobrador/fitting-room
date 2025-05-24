@@ -18,7 +18,7 @@ const ImageNamingModal = ({ visible, fileName, onChangeFileName, onCancel, onSav
       <View style={styles.modalContainer}>
         <Text style={styles.modalTitle}>Enter File Name</Text>
         <Text style={{ fontSize: 10, marginBottom: 5 }}>
-          Name the photo like 'front', 'back', 'left', etc.
+          Name the photo front or side
         </Text>
         <TextInput
           style={styles.input}
