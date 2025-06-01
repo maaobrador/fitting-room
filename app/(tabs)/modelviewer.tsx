@@ -8,10 +8,11 @@ import { useLocalSearchParams } from 'expo-router';
 
 const API_BASE = Constants.expoConfig?.extra?.API_BASE;
 
+
 const GltfModel = ({ modelUrl }: { modelUrl: string }) => {
   const model = useGLTF(modelUrl);
   return (
-    <group position={[0, 0, 0]}>
+    <group scale={[2, 2, 2]} position={[0, 0, 0]}>
       <primitive object={model.scene} />
     </group>
   );
@@ -69,7 +70,7 @@ export default function ModelViewer() {
             <Text>Loading model...</Text>
           </View>
         }>
-          <Canvas style={{ flex: 1 }} camera={{ position: [0, 1.5, 5], fov: 45 }}>
+          <Canvas style={{ flex: 1 }} camera={{ position: [0, 1.5, 5], fov: 30 }}>
             <color attach="background" args={['#fff']} />
             <ambientLight intensity={1} />
             <directionalLight position={[0, 0, 10]} intensity={1.5} />
