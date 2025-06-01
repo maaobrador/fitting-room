@@ -28,40 +28,21 @@ export default function ModelViewer() {
       return;
     }
 
-    const generateTimestamps = (baseTimestamp: string, rangeSeconds: number) => {
-      const timestamps: string[] = [];
-      const date = new Date(baseTimestamp);
-
-      for (let offset = 0; offset <= rangeSeconds; offset++) {
-        const adjustedDate = new Date(date.getTime() + offset * 1000);
-        const formattedTimestamp = adjustedDate
-          .toISOString()
-          .replace(/[-:.TZ]/g, '')
-          .replace(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2}).*$/, '$1$2$3_$4$5$6');
-        timestamps.push(formattedTimestamp);
-      }
-
-      return timestamps;
-    };
 
     const pollForModel = async () => {
       try {
-        const timestamps = generateTimestamps(timestamp, 3);
+        const url = `${API_BASE}/storage/outputs/${timestamp}/${timestamp}_model.glb`;
+        console.log('Attempting to access URL:', url);
 
-        for (const formattedTimestamp of timestamps) {
-          const url = `${API_BASE}/storage/outputs/${formattedTimestamp}/${formattedTimestamp}_model.glb`;
-          console.log('Attempting to access URL:', url);
-
-          try {
-            const { status } = await axios.head(url);
-            if (status === 200) {
-              setModelUrl(url);
-              setLoading(false);
-              return;
-            }
-          } catch (error) {
-            console.warn(`URL not found: ${url}`);
+        try {
+          const { status } = await axios.head(url);
+          if (status === 200) {
+            setModelUrl(url);
+            setLoading(false);
+            return;
           }
+        } catch (error) {
+          console.warn(`URL not found: ${url}`);
         }
 
         throw new Error('Model not available yet.');
