@@ -28,6 +28,15 @@ export default function TabLayout() {
           default: {},
         }),
       }}>
+              <Tabs.Screen
+        name="clothes"
+        options={{
+          title: 'Clothes',
+          headerTitleAlign: 'center',
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Ionicons size={28} name="shirt-outline" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{

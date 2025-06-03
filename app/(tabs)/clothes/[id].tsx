@@ -37,10 +37,10 @@ const ClothesScreen = () => {
     setShow3DModel(true); // Show the 3D model
   }
 
-  // ✅ Show the 3D model viewer with the selected model
+  // Show the 3D model viewer with the selected model
   if (show3DModel) {
     console.log('Model file:', clothes.model);
-    return <ThreeDModel model={clothes.model} />;
+    return <ThreeDModel model="assets/model/model.glb" clothes={clothes.model} />;
   }
 
   return (

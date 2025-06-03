@@ -151,7 +151,10 @@ export default function App() {
         type: 'image/png',
       });
 
-      const timestamp = new Date().toISOString();
+      const timestamp = new Date().toISOString()
+      .replace(/[-:.TZ]/g, '')
+      .replace(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2}).*$/, '$1$2$3_$4$5$6');
+      
       formData.append('height', height);
       formData.append('timestamp', timestamp);
 
